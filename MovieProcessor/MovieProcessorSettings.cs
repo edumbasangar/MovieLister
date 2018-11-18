@@ -1,6 +1,6 @@
 ﻿namespace MovieProcessor
 {
-    class MovieProcessorSettings
+    public class MovieProcessorSettings
     {
         public string ApiKey { get; set; }
         public string BaseURL { get; set; }
