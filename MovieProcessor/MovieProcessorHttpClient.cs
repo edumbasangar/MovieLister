@@ -30,19 +30,19 @@ namespace MovieProcessor
             _client.BaseAddress = new Uri($"{_movieProcessorSettings.BaseURL}");
             _client.DefaultRequestHeaders.Add("x-access-token", _movieProcessorSettings.AccessToken);
             _logger = logger;
-
+            
 
             var timeoutPolicy = Policy
                 .TimeoutAsync(
-                    TimeSpan.FromMilliseconds(40), // _settings.TimeoutWhenCallingApi,
+                    TimeSpan.FromMilliseconds(50), 
                     Polly.Timeout.TimeoutStrategy.Pessimistic
                 );
 
             var circuitBreaker = Policy
                 .Handle<Polly.Timeout.TimeoutRejectedException>()
                 .CircuitBreakerAsync(
-                    1, // _settings.ConsecutiveExceptionsAllowedBeforeBreaking,
-                    TimeSpan.FromSeconds(3) // _settings.DurationOfBreak
+                    1, 
+                    TimeSpan.FromSeconds(50) // _settings.DurationOfBreak
                 );
             var circuitBreakerWrappingTimeout = circuitBreaker
                 .WrapAsync(timeoutPolicy);
@@ -100,7 +100,7 @@ namespace MovieProcessor
 
         public async Task<MovieDetail> GetMovieDetail(Movie eachMovie)
         {
-            var episodesUrl = new Uri($"{_movieProcessorSettings.MovieDetailRelativeURL}{eachMovie.ID}",
+            var episodesUrl = new Uri($"{_movieProcessorSettings.MovieDetailFallbackRelativeURL}{eachMovie.ID}",
                 UriKind.Relative);
             var res = await _client.GetAsync(episodesUrl);
             res.EnsureSuccessStatusCode();

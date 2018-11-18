@@ -29,12 +29,14 @@ namespace MovieProcessor
 
         public async Task<List<MovieDetail>> GetShows()
         {
+            Func<MovieDetail, decimal> orderClause = c => Decimal.Parse(c.Price);
+
             var cacheKey = "moviesList";
             List<MovieDetail> shows = null;
 
             if (_cache.TryGetValue(cacheKey, out shows))
             {
-                return shows.OrderBy(x => x.Price).ToList();
+                return shows.OrderBy(orderClause).ToList();
             }
 
             await semaphoreSlim.WaitAsync();
@@ -42,7 +44,7 @@ namespace MovieProcessor
             {
                 if (_cache.TryGetValue(cacheKey, out shows))
                 {
-                    return shows.OrderBy(x=>x.Price).ToList();
+                    return shows.OrderBy(orderClause).ToList();
                 }
 
                 var movieList = await _client.GetLatestMovieListing();
@@ -57,7 +59,7 @@ namespace MovieProcessor
                 };
 
                 _cache.Set(cacheKey, completedMovieDetail.ToList(), cacheExpirationOptions);
-                return completedMovieDetail.OrderBy(x=>x.Price).ToList();
+                return completedMovieDetail.OrderBy(orderClause).ToList();
             }
             catch (Exception e)
             {
