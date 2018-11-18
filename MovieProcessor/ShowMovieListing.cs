@@ -48,7 +48,7 @@ namespace MovieProcessor
                 }
 
                 var movieList = await _client.GetLatestMovieListing();
-                var eachMovieDetail = movieList.Movies.Select(eachMovie => _client.GetMovieDetail(eachMovie)).ToList();
+                var eachMovieDetail = movieList.Movies.Select(eachMovie => _client.GetLatestMovieDetailListing(eachMovie)).ToList();
                 var completedMovieDetail = await Task.WhenAll(eachMovieDetail);
 
 
