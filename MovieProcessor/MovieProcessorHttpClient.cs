@@ -100,7 +100,7 @@ namespace MovieProcessor
 
         public async Task<MovieDetail> GetMovieDetail(Movie eachMovie)
         {
-            var episodesUrl = new Uri($"{_movieProcessorSettings.MovieDetailRelativeURL}",
+            var episodesUrl = new Uri($"{_movieProcessorSettings.MovieDetailRelativeURL}{eachMovie.ID}",
                 UriKind.Relative);
             var res = await _client.GetAsync(episodesUrl);
             res.EnsureSuccessStatusCode();
@@ -109,7 +109,7 @@ namespace MovieProcessor
 
         public async Task<MovieDetail> GetFallbackMovieDetail(Movie eachMovie)
         {
-            var episodesUrl = new Uri($"{_movieProcessorSettings.MovieDetailFallbackRelativeURL}",
+            var episodesUrl = new Uri($"{_movieProcessorSettings.MovieDetailFallbackRelativeURL}{eachMovie.ID}",
                 UriKind.Relative);
             var res = await _client.GetAsync(episodesUrl);
             res.EnsureSuccessStatusCode();

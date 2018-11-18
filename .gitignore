@@ -10,3 +10,4 @@
 /MovieProcessorTests/bin/Debug
 /MovieProcessor/bin/Debug/netstandard2.0
 /.vs
+/packages
