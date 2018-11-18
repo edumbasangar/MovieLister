@@ -33,7 +33,13 @@ namespace MovieProcessorTests
             //Arrange
             var fakeResponse = new Mock<MovieList>();
 
-            var options = Options.Create(new MovieProcessorSettings());
+            var options = Options.Create(new MovieProcessorSettings
+            {
+                MovieDetailFallbackRelativeURL = "api/cinemaworld/movie/",
+                MovieDetailRelativeURL = "api/cinemaworld/movie/",
+                MovieListFallbackRelativeURL = "api/cinemaworld/movies",
+                MovieListRelativeURL = "api/cinemaworld/movies"
+            });
 
             var httpMessageHandler = new Mock<HttpMessageHandler>();
             httpMessageHandler.Protected()
@@ -66,7 +72,14 @@ namespace MovieProcessorTests
         {
             //Arrange
             var fakeResponse = new Mock<MovieList>();
-            var options = Options.Create(new MovieProcessorSettings());
+
+            var options = Options.Create(new MovieProcessorSettings
+            {
+                MovieDetailFallbackRelativeURL = "api/cinemaworld/movie/",
+                MovieDetailRelativeURL = "api/cinemaworld/movie/",
+                MovieListFallbackRelativeURL = "api/cinemaworld/movies",
+                MovieListRelativeURL = "api/cinemaworld/movies"
+            });
 
             var httpMessageHandler = new Mock<HttpMessageHandler>();
             httpMessageHandler.Protected()
