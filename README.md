@@ -11,7 +11,8 @@
 
 + The testing is not exhaustive and only has two scenarios.
 + The ReactJS app is a very basic App out of the box CRA provided by the Microsoft .Net Core ReactJs.
-
++ Resiliency not hanlded for 4XX and 5XX errors.
++ ReactJs Components break on 4XX and 5XX errors, need to be fixed.
 
 
 
