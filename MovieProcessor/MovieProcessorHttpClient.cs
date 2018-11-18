@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MovieProcessor.Entities;
 using Polly;
 using Polly.CircuitBreaker;
 using Polly.Fallback;
 using Polly.Wrap;
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace MovieProcessor
 {
@@ -30,6 +28,7 @@ namespace MovieProcessor
             _movieProcessorSettings = movieSettings.Value;
             _client = client;
             _client.BaseAddress = new Uri($"{_movieProcessorSettings.BaseURL}");
+            _client.DefaultRequestHeaders.Add("x-access-token", _movieProcessorSettings.AccessToken);
             _logger = logger;
 
 
@@ -83,7 +82,7 @@ namespace MovieProcessor
 
         public async Task<MovieList> GetMovies()
         {
-            var episodesUrl = new Uri($"3/list/1200?language=en-US&api_key=d0d5155966b45f3ffe1a79c2b25b7ae9",
+            var episodesUrl = new Uri($"{_movieProcessorSettings.MovieListRelativeURL}",
                 UriKind.Relative);
             var res = await _client.GetAsync(episodesUrl);
             res.EnsureSuccessStatusCode();
@@ -92,7 +91,7 @@ namespace MovieProcessor
 
         public async Task<MovieList> GetFallbackMovies()
         {
-            var episodesUrl = new Uri($"3/list/1200?language=en-US&api_key=d0d5155966b45f3ffe1a79c2b25b7ae9",
+            var episodesUrl = new Uri($"{_movieProcessorSettings.MovieListFallbackRelativeURL}",
                 UriKind.Relative);
             var res = await _client.GetAsync(episodesUrl);
             res.EnsureSuccessStatusCode();
@@ -101,7 +100,7 @@ namespace MovieProcessor
 
         public async Task<MovieDetail> GetMovieDetail(Movie eachMovie)
         {
-            var episodesUrl = new Uri($"3/movie/{eachMovie.ID}?language=en-US&api_key=d0d5155966b45f3ffe1a79c2b25b7ae9",
+            var episodesUrl = new Uri($"{_movieProcessorSettings.MovieDetailRelativeURL}",
                 UriKind.Relative);
             var res = await _client.GetAsync(episodesUrl);
             res.EnsureSuccessStatusCode();
@@ -110,7 +109,7 @@ namespace MovieProcessor
 
         public async Task<MovieDetail> GetFallbackMovieDetail(Movie eachMovie)
         {
-            var episodesUrl = new Uri($"3/movie/{eachMovie.ID}?language=en-US&api_key=d0d5155966b45f3ffe1a79c2b25b7ae9",
+            var episodesUrl = new Uri($"{_movieProcessorSettings.MovieDetailFallbackRelativeURL}",
                 UriKind.Relative);
             var res = await _client.GetAsync(episodesUrl);
             res.EnsureSuccessStatusCode();

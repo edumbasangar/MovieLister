@@ -2,7 +2,7 @@
 {
     public class MovieProcessorSettings
     {
-        public string ApiKey { get; set; }
+        public string AccessToken { get; set; }
         public string BaseURL { get; set; }
         public string MovieListRelativeURL { get; set; }
         public string MovieListFallbackRelativeURL { get; set; }
