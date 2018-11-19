@@ -1,17 +1,33 @@
 import React, { Component } from 'react';
+import throwOnError from '../utils/throwOnError';
 
 export class FetchData extends Component {
     displayName = FetchData.name
 
     constructor(props) {
         super(props);
-        this.state = { forecasts: [], loading: true };
+        this.state = { movies: [], loading: true };
+    }
 
-        fetch('api/MovieData/MovieListingDetails')
+    componentDidMount() {
+        this.fetchData();
+    }
+
+    fetchData = () => {
+        this.setState(state => ({ ...state, isBusy: true }));
+        return fetch('api/MovieData/MovieListingDetails')
+            .then(throwOnError)
             .then(response => response.json())
-            .then(data => {
-                this.setState({ movies: data, loading: false });
-            });
+            .then(this.onReceivedData)
+            .catch(this.onError);
+    }
+
+    onError = (e) => {
+        this.setState(state => ({ ...state, loading: false }));
+    }
+
+    onReceivedData = (data) => {
+        this.setState({ movies: data, loading: false });
     }
 
     static renderMovieList(movies) {
