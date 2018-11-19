@@ -63,7 +63,7 @@ namespace MovieProcessor
             }
             catch (Exception e)
             {
-                _logger.Log(LogLevel.Error,e.Message);
+                _logger.Log(LogLevel.Error, e.Message);
                 throw;
             }
             finally

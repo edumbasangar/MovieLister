@@ -106,5 +106,47 @@ namespace MovieProcessorTests
             //Assert
             Assert.IsType<MovieList>(result);
         }
+
+        [Fact]
+        public async Task HttpClientTest_GetMovieDetail()
+        {
+            //Arrange
+            var fakeResponse = new Mock<MovieDetail>();
+            var fakeMovie = new Mock<Movie>();
+
+            var options = Options.Create(new MovieProcessorSettings
+            {
+                MovieDetailFallbackRelativeURL = "api/cinemaworld/movie/",
+                MovieDetailRelativeURL = "api/cinemaworld/movie/",
+                MovieListFallbackRelativeURL = "api/cinemaworld/movies",
+                MovieListRelativeURL = "api/cinemaworld/movies"
+            });
+
+            var httpMessageHandler = new Mock<HttpMessageHandler>();
+            httpMessageHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .Returns(Task.FromResult(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new ObjectContent<MovieDetail>(new MovieDetail(), new JsonMediaTypeFormatter())
+                }));
+
+            var httpClient = new HttpClient(httpMessageHandler.Object);
+            httpClient.BaseAddress = new Uri(@"http://webjetapitest.azurewebsites.net/");
+            httpClient.DefaultRequestHeaders.Accept.Clear();
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
+
+            IAsyncPolicy<HttpResponseMessage> mockPolicy = Policy.NoOpAsync<HttpResponseMessage>();
+
+            var client = new MovieProcessorHttpClient(httpClient, _mockLogger.Object, options);
+
+            //Act
+            var result = await client.GetMovieDetail(fakeMovie.Object);
+
+            //Assert
+            Assert.IsType<MovieDetail>(result);
+        }
+
     }
 }

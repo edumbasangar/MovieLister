@@ -6,9 +6,7 @@ using Polly.CircuitBreaker;
 using Polly.Fallback;
 using Polly.Wrap;
 using System;
-using System.Net;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace MovieProcessor
@@ -33,18 +31,18 @@ namespace MovieProcessor
             _client.BaseAddress = new Uri($"{_movieProcessorSettings.BaseURL}");
             _client.DefaultRequestHeaders.Add("x-access-token", _movieProcessorSettings.AccessToken);
             _logger = logger;
-            
+
 
             var timeoutPolicy = Policy
                 .TimeoutAsync(
-                    TimeSpan.FromMilliseconds(50), 
+                    TimeSpan.FromMilliseconds(50),
                     Polly.Timeout.TimeoutStrategy.Pessimistic
                 );
 
             var circuitBreaker = Policy
                 .Handle<Polly.Timeout.TimeoutRejectedException>()
                 .CircuitBreakerAsync(
-                    1, 
+                    1,
                     TimeSpan.FromSeconds(50) // _settings.DurationOfBreak
                 );
             var circuitBreakerWrappingTimeout = circuitBreaker
@@ -88,7 +86,7 @@ namespace MovieProcessor
         {
             return _policyWrapMovieDetail.ExecuteAsync(() => GetMovieDetail(movie));
         }
-        
+
         public async Task<MovieList> GetMovies()
         {
             var episodesUrl = new Uri($"{_movieProcessorSettings.MovieListRelativeURL}",
