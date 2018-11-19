@@ -51,8 +51,10 @@ namespace MovieProcessorTests
                     Content = new ObjectContent<MovieList>(new MovieList(), new JsonMediaTypeFormatter())
                 }));
 
-            var httpClient = new HttpClient(httpMessageHandler.Object);
-            httpClient.BaseAddress = new Uri(@"http://webjetapitest.azurewebsites.net/");
+            var httpClient = new HttpClient(httpMessageHandler.Object)
+            {
+                BaseAddress = new Uri(@"http://webjetapitest.azurewebsites.net/")
+            };
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
 
@@ -91,8 +93,10 @@ namespace MovieProcessorTests
                     Content = new ObjectContent<MovieList>(new MovieList(), new JsonMediaTypeFormatter())
                 }));
 
-            var httpClient = new HttpClient(httpMessageHandler.Object);
-            httpClient.BaseAddress = new Uri(@"http://webjetapitest.azurewebsites.net/");
+            var httpClient = new HttpClient(httpMessageHandler.Object)
+            {
+                BaseAddress = new Uri(@"http://webjetapitest.azurewebsites.net/")
+            };
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
 
@@ -132,8 +136,10 @@ namespace MovieProcessorTests
                     Content = new ObjectContent<MovieDetail>(new MovieDetail(), new JsonMediaTypeFormatter())
                 }));
 
-            var httpClient = new HttpClient(httpMessageHandler.Object);
-            httpClient.BaseAddress = new Uri(@"http://webjetapitest.azurewebsites.net/");
+            var httpClient = new HttpClient(httpMessageHandler.Object)
+            {
+                BaseAddress = new Uri(@"http://webjetapitest.azurewebsites.net/")
+            };
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
 

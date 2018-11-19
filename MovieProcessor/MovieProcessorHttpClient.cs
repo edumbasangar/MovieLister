@@ -15,11 +15,6 @@ namespace MovieProcessor
     {
         private HttpClient _client;
         private ILogger<MovieProcessorHttpClient> _logger;
-        private readonly string _apiKey;
-        private readonly FallbackPolicy<Task<MovieList>> _policy;
-        private readonly FallbackPolicy<Task<MovieDetail>> _policyMovieDetail;
-        private readonly Policy policy;
-        private readonly PolicyWrap policyStrategy;
         private readonly PolicyWrap<MovieList> _policyWrap;
         private readonly PolicyWrap<MovieDetail> _policyWrapMovieDetail;
         private readonly MovieProcessorSettings _movieProcessorSettings;

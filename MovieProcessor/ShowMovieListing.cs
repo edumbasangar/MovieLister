@@ -29,12 +29,11 @@ namespace MovieProcessor
 
         public async Task<List<MovieDetail>> GetShows()
         {
-            Func<MovieDetail, decimal> orderClause = c => Decimal.Parse(c.Price);
+            decimal orderClause(MovieDetail c) => Decimal.Parse(c.Price);
 
             var cacheKey = "moviesList";
-            List<MovieDetail> shows = null;
 
-            if (_cache.TryGetValue(cacheKey, out shows))
+            if (_cache.TryGetValue(cacheKey, out List<MovieDetail> shows))
             {
                 return shows.OrderBy(orderClause).ToList();
             }
