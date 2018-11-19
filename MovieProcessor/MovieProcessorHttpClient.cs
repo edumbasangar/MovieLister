@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using MovieProcessor.Entities;
 using Polly;
 using Polly.CircuitBreaker;
-using Polly.Fallback;
 using Polly.Wrap;
 using System;
 using System.Net.Http;
