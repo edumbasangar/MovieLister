@@ -38,7 +38,9 @@ namespace MovieProcessorTests
                 MovieDetailFallbackRelativeURL = "api/cinemaworld/movie/",
                 MovieDetailRelativeURL = "api/cinemaworld/movie/",
                 MovieListFallbackRelativeURL = "api/cinemaworld/movies",
-                MovieListRelativeURL = "api/cinemaworld/movies"
+                MovieListRelativeURL = "api/cinemaworld/movies",
+                BaseURL = "http://webjetapitest.azurewebsites.net/",
+                AccessToken = "sjd1HfkjU83ksdsm3802k"
             });
 
             var httpMessageHandler = new Mock<HttpMessageHandler>();
@@ -51,10 +53,7 @@ namespace MovieProcessorTests
                     Content = new ObjectContent<MovieList>(new MovieList(), new JsonMediaTypeFormatter())
                 }));
 
-            var httpClient = new HttpClient(httpMessageHandler.Object)
-            {
-                BaseAddress = new Uri(@"http://webjetapitest.azurewebsites.net/")
-            };
+            var httpClient = new HttpClient(httpMessageHandler.Object);
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
 
@@ -80,7 +79,9 @@ namespace MovieProcessorTests
                 MovieDetailFallbackRelativeURL = "api/cinemaworld/movie/",
                 MovieDetailRelativeURL = "api/cinemaworld/movie/",
                 MovieListFallbackRelativeURL = "api/cinemaworld/movies",
-                MovieListRelativeURL = "api/cinemaworld/movies"
+                MovieListRelativeURL = "api/cinemaworld/movies",
+                BaseURL = "http://webjetapitest.azurewebsites.net/",
+                AccessToken = "sjd1HfkjU83ksdsm3802k"
             });
 
             var httpMessageHandler = new Mock<HttpMessageHandler>();
@@ -93,10 +94,7 @@ namespace MovieProcessorTests
                     Content = new ObjectContent<MovieList>(new MovieList(), new JsonMediaTypeFormatter())
                 }));
 
-            var httpClient = new HttpClient(httpMessageHandler.Object)
-            {
-                BaseAddress = new Uri(@"http://webjetapitest.azurewebsites.net/")
-            };
+            var httpClient = new HttpClient(httpMessageHandler.Object);
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
 
@@ -104,11 +102,7 @@ namespace MovieProcessorTests
 
             var client = new MovieProcessorHttpClient(httpClient, _mockLogger.Object, options);
 
-            //Act
-            var result = await client.GetLatestMovieListing();
-
-            //Assert
-            Assert.IsType<MovieList>(result);
+            Assert.True(client.GetLatestMovieListing().IsFaulted);
         }
 
         [Fact]
@@ -123,7 +117,9 @@ namespace MovieProcessorTests
                 MovieDetailFallbackRelativeURL = "api/cinemaworld/movie/",
                 MovieDetailRelativeURL = "api/cinemaworld/movie/",
                 MovieListFallbackRelativeURL = "api/cinemaworld/movies",
-                MovieListRelativeURL = "api/cinemaworld/movies"
+                MovieListRelativeURL = "api/cinemaworld/movies",
+                BaseURL = "http://webjetapitest.azurewebsites.net/",
+                AccessToken = "sjd1HfkjU83ksdsm3802k"
             });
 
             var httpMessageHandler = new Mock<HttpMessageHandler>();
@@ -136,10 +132,7 @@ namespace MovieProcessorTests
                     Content = new ObjectContent<MovieDetail>(new MovieDetail(), new JsonMediaTypeFormatter())
                 }));
 
-            var httpClient = new HttpClient(httpMessageHandler.Object)
-            {
-                BaseAddress = new Uri(@"http://webjetapitest.azurewebsites.net/")
-            };
+            var httpClient = new HttpClient(httpMessageHandler.Object);
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
 
@@ -154,5 +147,42 @@ namespace MovieProcessorTests
             Assert.IsType<MovieDetail>(result);
         }
 
+        [Fact]
+        public async Task HttpClientTest_GetMovieDetail_ReturnsException()
+        {
+            //Arrange
+            var fakeResponse = new Mock<MovieDetail>();
+            var fakeMovie = new Mock<Movie>();
+
+            var options = Options.Create(new MovieProcessorSettings
+            {
+                MovieDetailFallbackRelativeURL = "api/cinemaworld/movie/",
+                MovieDetailRelativeURL = "api/cinemaworld/movie/",
+                MovieListFallbackRelativeURL = "api/cinemaworld/movies",
+                MovieListRelativeURL = "api/cinemaworld/movies",
+                BaseURL = "http://webjetapitest.azurewebsites.net/",
+                AccessToken = "sjd1HfkjU83ksdsm3802k"
+            });
+
+            var httpMessageHandler = new Mock<HttpMessageHandler>();
+            httpMessageHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .Returns(Task.FromResult(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Content = new ObjectContent<MovieDetail>(new MovieDetail(), new JsonMediaTypeFormatter())
+                }));
+
+            var httpClient = new HttpClient(httpMessageHandler.Object);
+            httpClient.DefaultRequestHeaders.Accept.Clear();
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
+
+            IAsyncPolicy<HttpResponseMessage> mockPolicy = Policy.NoOpAsync<HttpResponseMessage>();
+
+            var client = new MovieProcessorHttpClient(httpClient, _mockLogger.Object, options);
+
+            Assert.True(client.GetMovieDetail(fakeMovie.Object).IsFaulted);
+        }
     }
 }
